@@ -38,7 +38,7 @@ module Norbauer
           else
             with_scope(:find => { :conditions => { slug_column => slug } }) do
               find(:first, options)
-            end or raise ::ActiveRecord::RecordNotFound
+            end or find(slug.to_i, options) or raise ::ActiveRecord::RecordNotFound
           end
         end
 
@@ -63,7 +63,7 @@ module Norbauer
 
       module InstanceMethods
         def to_param
-          return self.id.to_s if slug_prepend_id && self[slug_column].blank?
+          return self.id.to_s if self[slug_column].blank?
           slug_prepend_id ? "#{self.id}-#{self[slug_column]}" : self[slug_column]
         end
       end
